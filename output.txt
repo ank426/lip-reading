@@ -1,0 +1,19 @@
+Using device: cuda
+Creating datasets...
+Number of classes: 72
+Classes: ['ABOUT', 'ABSOLUTELY', 'ABUSE', 'ACCESS', 'ACCORDING', 'ACCUSED', 'ACROSS', 'ACTION', 'ACTUALLY', 'AFFAIRS', 'AFFECTED', 'AF
+RICA', 'AFTER', 'AFTERNOON', 'AGAIN', 'AGAINST', 'AGREE', 'AGREEMENT', 'AHEAD', 'ALLEGATIONS', 'ALLOW', 'ALLOWED', 'ALMOST', 'ALREADY'
+, 'ALWAYS', 'AMERICA', 'AMERICAN', 'AMONG', 'AMOUNT', 'ANNOUNCED', 'ANOTHER', 'ANSWER', 'ANYTHING', 'AREAS', 'AROUND', 'ARRESTED', 'AS
+KED', 'ASKING', 'ATTACK', 'ATTACKS', 'AUTHORITIES', 'BANKS', 'BECAUSE', 'BECOME', 'BEFORE', 'BEHIND', 'BEING', 'BELIEVE', 'BENEFIT', '
+BENEFITS', 'BETTER', 'BETWEEN', 'BIGGEST', 'BILLION', 'BLACK', 'BORDER', 'BRING', 'BRITAIN', 'BRITISH', 'BROUGHT', 'BUDGET', 'BUILD',
+'BUILDING', 'BUSINESS', 'BUSINESSES', 'CALLED', 'CAMERON', 'CAMPAIGN', 'CANCER', 'CANNOT', 'CAPITAL', 'CASES']
+Starting training...
+Epoch 1/1
+Training: 100%|███████████████████████████████████████████████████████████████████████████████████| 1095/1095 [34:06<00:00,  1.87s/it]
+Train Loss: 4.2265, Train Acc: 0.0294
+Validation: 100%|█████████████████████████████████████████████████████████████████████████████████████| 57/57 [01:47<00:00,  1.89s/it]
+Val Loss: 4.0833, Val Acc: 0.0575
+Saved best model checkpoint.
+Evaluating on test set...
+Testing: 100%|████████████████████████████████████████████████████████████████████████████████████████| 57/57 [01:43<00:00,  1.82s/it]
+Test Accuracy: 0.0575

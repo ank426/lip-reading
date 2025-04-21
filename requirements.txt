@@ -1,0 +1,10 @@
+opencv-python
+torch
+torchvision
+numpy
+matplotlib
+tqdm
+scikit-learn
+seaborn
+dlib
+facenet-pytorch

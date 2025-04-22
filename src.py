@@ -20,7 +20,6 @@ print(f"Using device: {device}")
 BATCH_SIZE = 8
 EPOCHS = 20
 LEARNING_RATE = 0.0001
-WEIGHT_DECAY = 0.0
 SEQUENCE_LENGTH = 20  # Maximum number of frames to use
 IMAGE_SIZE = 112  # Size of input images
 NUM_CLASSES = None  # Will be determined from selected classes
@@ -414,7 +413,7 @@ def main():
 
     # Define loss function and optimizer
     criterion = nn.CrossEntropyLoss()
-    optimizer = optim.Adam(filter(lambda p: p.requires_grad, model.parameters()), lr=LEARNING_RATE, weight_decay=WEIGHT_DECAY)
+    optimizer = optim.Adam(filter(lambda p: p.requires_grad, model.parameters()), lr=LEARNING_RATE)
     scheduler = optim.lr_scheduler.ReduceLROnPlateau(optimizer, 'min', patience=3, factor=0.5)
 
     # Train the model

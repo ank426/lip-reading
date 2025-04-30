@@ -37,7 +37,7 @@ pip install -r requirements.txt
 Ensure your dataset is structured as follows inside the `data/` directory. The data loader expects a root folder containing subfolders for each word class, which in turn contain `train`, `val`, and `test` directories.
 
 ```
-data/lipread_mp4/
+data/raw/lipread_mp4/
 ├── ABOUT/
 │   ├── train/
 │   ├── val/

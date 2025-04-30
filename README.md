@@ -1,4 +1,4 @@
-# Lip Reading with MobileNetV2 and GRU
+# Lip Reading
 
 This project implements a deep learning pipeline for automated lip reading (visual speech recognition). It uses a hybrid architecture that combines a Convolutional Neural Network (MobileNetV2) for spatial feature extraction and a Gated Recurrent Unit (GRU) for temporal sequence modeling.
 

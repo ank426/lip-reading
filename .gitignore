@@ -27,4 +27,6 @@ reports/figures/*.png
 output.txt
 logs/
 
+docs/
+
 local_config.py

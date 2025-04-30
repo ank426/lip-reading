@@ -4,7 +4,7 @@ This project implements a deep learning pipeline for automated lip reading (visu
 
 ## Project Structure
 
-The codebase is organized as a modular Python package to support scalability and reproducibility.
+The codebase is organized as follows:
 
 * **data/**: Contains raw video datasets and processed tensors.
 * **models/**: Stores trained model artifacts (.pt files).
@@ -26,7 +26,18 @@ The codebase is organized as a modular Python package to support scalability and
 ## Installation
 
 1. Clone the repository.
+
+```bash
+git clone https://github.com/ank426/lip-reading.git
+```
+
 2. Create and activate a virtual environment.
+
+```bash
+python -m venv .venv
+source .venv/bin/activate
+```
+
 3. Install dependencies:
 
 ```bash

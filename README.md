@@ -96,15 +96,26 @@ with `--device` or the `LIPREADING_DEVICE` environment variable.
 
 ## Development
 
+Quality gates run locally as a git pre-commit hook — there is no CI. Lint, formatting and type
+checks execute on every `git commit`; tests are run manually.
+
 ```bash
-uv sync --all-groups      # install runtime + dev dependencies
-uv run ruff check .       # lint
-uv run ruff format .      # format
-uv run ty check           # type check
-uv run pytest             # tests
+uv sync --all-groups            # install runtime + dev dependencies
+uv run pre-commit install       # install .git/hooks/pre-commit (once per clone)
+
+uv run pre-commit run --all-files   # run every hook manually
+uv run pre-commit autoupdate        # refresh hook definitions
+
+uv run ruff check .             # lint
+uv run ruff format .            # format
+uv run ty check                 # type check
+uv run pytest                   # tests (not automatic)
 uv run pytest --cov=lipreading
-uv build                  # build a wheel/sdist
+uv build                        # build a wheel/sdist
 ```
+
+Hooks auto-fix findings, so a commit touching unformatted or unlinted code is aborted: re-stage the
+files pre-commit rewrote and commit again.
 
 ## Results
 

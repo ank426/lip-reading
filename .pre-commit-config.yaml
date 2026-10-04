@@ -1,0 +1,34 @@
+# Local quality gate: runs on `git commit`, no CI involved.
+#
+#   uv sync --all-groups          # once, to install the tools into .venv
+#   uv run pre-commit install     # once, to install .git/hooks/pre-commit
+#   uv run pre-commit run --all-files
+#
+# Hooks use `language: system` so they always execute the exact tool versions
+# pinned in uv.lock via the project virtualenv.
+default_install_hook_types: [pre-commit]
+
+repos:
+  - repo: local
+    hooks:
+      - id: ruff-check
+        name: ruff check
+        entry: uv run --no-sync ruff check --fix --exit-non-zero-on-fix --force-exclude
+        language: system
+        types: [python]
+        require_serial: true
+
+      - id: ruff-format
+        name: ruff format
+        entry: uv run --no-sync ruff format --force-exclude
+        language: system
+        types: [python]
+        require_serial: true
+
+      - id: ty
+        name: ty check
+        entry: uv run --no-sync ty check --error-on-warning
+        language: system
+        types: [python]
+        pass_filenames: false
+        require_serial: true

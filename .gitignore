@@ -1,32 +1,55 @@
+# Byte-compiled / cache
 __pycache__/
 *.py[cod]
 *$py.class
 
+# Environments
 .venv/
 venv/
 env/
 ENV/
 
+# Packaging / build artifacts
+build/
+dist/
+*.egg-info/
+.uv/
+
+# Tooling caches
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+.coverage
+.coverage.*
+htmlcov/
+coverage.xml
+
+# Editors / OS
 .vscode/
 .idea/
 .DS_Store
 Thumbs.db
 
+# Data (keep directory placeholders)
 data/raw/*
 data/interim/*
 data/processed/*
 !data/.gitkeep
 
+# Model artifacts
 models/current/*.pt
 models/current/*.pth
 models/archived/*
 *.pt
 *.pth
 
+# Generated reports
 reports/figures/*.png
+reports/output.txt
 output.txt
 logs/
 
-docs/
-
+# Local overrides
 local_config.py
+.env
+.env.*

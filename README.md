@@ -1,52 +1,79 @@
 # Lip Reading
 
-This project implements a deep learning pipeline for automated lip reading (visual speech recognition). It uses a hybrid architecture that combines a Convolutional Neural Network (MobileNetV2) for spatial feature extraction and a Gated Recurrent Unit (GRU) for temporal sequence modeling.
+Visual speech recognition: each video is encoded frame-by-frame with a pretrained MobileNetV2
+backbone, the resulting feature sequences are aggregated by a bidirectional GRU, and the final
+hidden state is classified into a word class.
 
-## Project Structure
-
-The codebase is organized as follows:
-
-* **data/**: Contains raw video datasets and processed tensors.
-* **models/**: Stores trained model artifacts (.pt files).
-* **reports/**: Generated figures (confusion matrices, training history) and logs.
-* **src/**: Source code package.
-
-  * **config.py**: Central configuration for hyperparameters and file paths.
-  * **data/**: Dataset classes and video processing logic.
-  * **models/**: Neural network architecture definitions.
-  * **utils/**: Helper functions for logging and visualization.
-  * **train.py**: Main training loop.
-  * **predict.py**: Inference script for single video prediction.
-
-## Prerequisites
-
-* Python 3.8 or higher
-* CUDA enabled GPU (recommended)
-
-## Installation
-
-1. Clone the repository.
+## Quickstart
 
 ```bash
 git clone https://github.com/ank426/lip-reading.git
+cd lip-reading
+
+uv sync --all-groups          # creates .venv from pyproject.toml + uv.lock
+uv run lipreading-train --help
 ```
 
-2. Create and activate a virtual environment.
+Requirements: Python >= 3.11 (`.python-version` pins 3.13) and, ideally, a CUDA GPU.
+
+## Usage
+
+### Training
 
 ```bash
-python -m venv .venv
-source .venv/bin/activate
+uv run lipreading-train                                  # all hyperparameters from config defaults
+uv run lipreading-train --epochs 20 --batch-size 16      # override anything from the CLI
+uv run lipreading-train --max-classes 10 --no-amp        # quick CPU-friendly experiment
 ```
 
-3. Install dependencies:
+The best checkpoint lands in `models/current/best_lip_reading_model.pt`, the class order is written to
+`word_mappings.json`, and plots are saved to `reports/figures/`.
+
+Useful flags: `--epochs`, `--batch-size`, `--learning-rate`, `--weight-decay`, `--dropout`,
+`--hidden-size`, `--sequence-length`, `--image-size`, `--max-classes`, `--num-workers`, `--device`,
+`--no-amp`, `--seed`, `--data-dir`, `--checkpoint`, `--class-mapping`.
+
+### Inference
 
 ```bash
-pip install -r requirements.txt
+uv run lipreading-predict path/to/video.mp4
+uv run lipreading-predict clip_a.mp4 clip_b.mp4 --top-k 5
+uv run lipreading-predict --dir data/raw/lipread_mp4/ABOUT/test --json
 ```
 
-## Data Preparation
+### Library use
 
-Ensure your dataset is structured as follows inside the `data/` directory. The data loader expects a root folder containing subfolders for each word class, each with `train`, `val`, and `test` directories.
+```python
+from lipreading import LipReadingDataset, LipReadingModel, load_video_frames, load_class_mappings
+
+classes = load_class_mappings()
+model = LipReadingModel(num_classes=len(classes))
+frames = load_video_frames("clip.mp4")  # (20, 3, 112, 112)
+logits = model(frames.unsqueeze(0))
+```
+
+## Project layout
+
+```
+pyproject.toml            # PEP 621 metadata, dependencies, ruff + pytest config
+uv.lock                   # pinned resolution (committed)
+src/lipreading/
+├── __init__.py           # public API re-exports
+├── config.py             # Config dataclass: paths, device, hyperparameters
+├── dataset.py            # LipReadingDataset + video decoding
+├── model.py              # MobileNetV2 + BiGRU network
+├── helpers.py            # class-mapping IO, plotting, seeding
+├── train.py              # lipreading-train entry point
+└── predict.py            # lipreading-predict entry point
+tests/                    # pytest suite (dataset, model, helpers, config)
+data/raw/lipread_mp4/     # dataset root (git-ignored)
+models/current/           # checkpoints (git-ignored)
+reports/figures/          # generated plots (git-ignored)
+```
+
+## Data preparation
+
+Videos are grouped per word, with one directory per split:
 
 ```
 data/raw/lipread_mp4/
@@ -55,51 +82,32 @@ data/raw/lipread_mp4/
 │   ├── val/
 │   └── test/
 ├── BANK/
-│   ├── ...
-└── ...
+│   └── ...
 ```
+
+Each class may need at most `sequence_length` decoded frames; shorter clips are zero-padded and the
+mouth region is cropped heuristically from the lower-central part of each frame.
 
 ## Configuration
 
-Modify `src/config.py` to adjust training parameters such as:
+Defaults live in the `Config` dataclass (`src/lipreading/config.py`) and every field can be
+overridden from the CLI. Device selection is automatic (`cuda` → `mps` → `cpu`) and can be forced
+with `--device` or the `LIPREADING_DEVICE` environment variable.
 
-* `BATCH_SIZE`
-* `LEARNING_RATE`
-* `EPOCHS`
-* `MAX_CLASSES` (set to `None` to train on the full dataset)
-
-## Usage
-
-### Training
-
-Run the training module from the project root. It handles data loading, model initialization, training, validation, and metric logging.
+## Development
 
 ```bash
-python -m src.train
+uv sync --all-groups      # install runtime + dev dependencies
+uv run ruff check .       # lint
+uv run ruff format .      # format
+uv run pytest             # tests
+uv run pytest --cov=lipreading
+uv build                  # build a wheel/sdist
 ```
-
-The best model weights will be stored in `models/current/best_lip_reading_model.pt`, and training plots will be saved in `reports/figures/`.
-
-### Inference
-
-To perform lip reading on a specific video:
-
-```bash
-python -m src.predict --video path/to/video.mp4
-```
-
-## Architecture Details
-
-The model processes video sequences in the following steps:
-
-1. **Input:** A sequence of video frames converted to a tensor.
-2. **Spatial Feature Extraction:** Each frame is passed through a pre trained MobileNetV2 with the classification head removed.
-3. **Temporal Aggregation:** Extracted feature vectors are processed by a Bidirectional GRU to capture temporal speech patterns.
-4. **Classification:** The final hidden state is fed into a fully connected layer followed by a Softmax activation to predict the word class.
 
 ## Results
 
-After training, see the `reports/figures` directory for:
+Generated reports in `reports/figures/`:
 
-* **Training History:** Plots of loss and accuracy over epochs.
-* **Confusion Matrix:** A heatmap showing classification performance across word classes.
+* **Training history** — loss and accuracy curves per epoch.
+* **Confusion matrix** — row-normalized heatmap over word classes.

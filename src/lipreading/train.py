@@ -70,6 +70,17 @@ def run_epoch(
     return _epoch_stats(total_loss, correct, total)
 
 
+def _make_loader(dataset: LipReadingDataset, cfg: Config, *, shuffle: bool) -> DataLoader:
+    return DataLoader(
+        dataset,
+        batch_size=cfg.batch_size,
+        shuffle=shuffle,
+        num_workers=cfg.num_workers,
+        pin_memory=cfg.pin_memory,
+        persistent_workers=cfg.num_workers > 0,
+    )
+
+
 def train(cfg: Config = CONFIG) -> History:
     cfg.ensure_dirs()
     seed_everything(cfg.seed)
@@ -94,14 +105,8 @@ def train(cfg: Config = CONFIG) -> History:
     save_class_mappings(train_dataset.classes, cfg.class_mapping_path)
     print(f"Train: {train_dataset!r}\nVal:   {val_dataset!r}")
 
-    loader_kwargs = {
-        "batch_size": cfg.batch_size,
-        "num_workers": cfg.num_workers,
-        "pin_memory": cfg.pin_memory,
-        "persistent_workers": cfg.num_workers > 0,
-    }
-    train_loader: DataLoader = DataLoader(train_dataset, shuffle=True, **loader_kwargs)
-    val_loader: DataLoader = DataLoader(val_dataset, **loader_kwargs)
+    train_loader = _make_loader(train_dataset, cfg, shuffle=True)
+    val_loader = _make_loader(val_dataset, cfg, shuffle=False)
 
     model = LipReadingModel(
         num_classes=len(train_dataset.classes),

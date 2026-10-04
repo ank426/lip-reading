@@ -55,7 +55,7 @@ logits = model(frames.unsqueeze(0))
 ## Project layout
 
 ```
-pyproject.toml            # PEP 621 metadata, dependencies, ruff + pytest config
+pyproject.toml            # PEP 621 metadata, dependencies, ruff + ty + pytest config
 uv.lock                   # pinned resolution (committed)
 src/lipreading/
 ├── __init__.py           # public API re-exports
@@ -100,6 +100,7 @@ with `--device` or the `LIPREADING_DEVICE` environment variable.
 uv sync --all-groups      # install runtime + dev dependencies
 uv run ruff check .       # lint
 uv run ruff format .      # format
+uv run ty check           # type check
 uv run pytest             # tests
 uv run pytest --cov=lipreading
 uv build                  # build a wheel/sdist

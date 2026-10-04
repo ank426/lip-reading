@@ -13,7 +13,7 @@ from lipreading.dataset import LipReadingDataset, build_transform, load_video_fr
 
 def _write_video(path: Path, frames: int = 6, size: tuple[int, int] = (64, 64)) -> Path:
     path.parent.mkdir(parents=True, exist_ok=True)
-    writer = cv2.VideoWriter(str(path), cv2.VideoWriter_fourcc(*"mp4v"), 25.0, size)
+    writer = cv2.VideoWriter(str(path), cv2.VideoWriter.fourcc(*"mp4v"), 25.0, size)
     if not writer.isOpened():
         pytest.skip("OpenCV has no mp4v encoder available")
     for _ in range(frames):

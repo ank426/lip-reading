@@ -118,8 +118,8 @@ class LipReadingDataset(Dataset[tuple[torch.Tensor, torch.Tensor]]):
     def __len__(self) -> int:
         return len(self.samples)
 
-    def __getitem__(self, idx: int) -> tuple[torch.Tensor, torch.Tensor]:
-        path, word = self.samples[idx]
+    def __getitem__(self, index: int) -> tuple[torch.Tensor, torch.Tensor]:
+        path, word = self.samples[index]
         frames = load_video_frames(path, self.transform, self.sequence_length)
         label = torch.tensor(self.class_to_idx[word], dtype=torch.long)
         return frames, label
